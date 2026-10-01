@@ -1,0 +1,21 @@
+{
+  "name": "gta-v-menu",
+  "productName": "GTA V",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "desktop/main.cjs",
+  "description": "Independent Windows installer for an in-game GTA V Story Mode menu on PS5 13.60",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "start": "electron .",
+    "build:menu": "node scripts/build-gta-bridge.mjs",
+    "build:elf": "node scripts/build.mjs",
+    "test": "node --test tests/connection.test.mjs tests/profiles.test.mjs",
+    "package": "node scripts/package-desktop.mjs",
+    "test:native": "node --test tests/native.test.mjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.5"
+  }
+}
