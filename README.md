@@ -6,6 +6,15 @@ No PS Neighborhood installation or MCP bridge is needed. The app connects direct
 
 This project targets jailbroken **PS5 firmware 13.60**. Executable profiles are included for **PPSA04263 / 01.000.000** and **PPSA04264 / 01.010.002**. The installer checks executable fingerprints and refuses other builds. It also refuses installation outside an active Story Mode character. This is not a GTA Online menu.
 
+## Which download?
+
+Use **GTA-V-Menu-Both-Game-Builds-Windows-x64.zip** for either supported game build:
+
+- **PPSA04263 — 01.000.000**
+- **PPSA04264 — 01.010.002**
+
+The app detects the running executable and selects its matching profile automatically. **v1.0.0 is the trainer release version, not the GTA version.** Both profiles are included in the same download.
+
 ## Controls
 
 - **L1 + D-pad Right:** open or close.
