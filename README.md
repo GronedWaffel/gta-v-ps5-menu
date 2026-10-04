@@ -1,3 +1,7 @@
+<!-- snipers-experimental-release -->
+**Experimental multi-firmware downloads:** [Open the release with ELF / Windows assets](https://github.com/GronedWaffel/gta-v-ps5-menu/releases/tag/v1.1.0-experimental.1). Targets 33 exact firmware versions from 7.00 through 13.60; 9.05 and 11.40 excluded. Community testing is still required. Stable 13.60 remains separate. [Experimental builder](https://sniperscheats.lol/builder/ex/) · [Experimental payloads](https://sniperscheats.lol/payloads/ex/).
+<!-- /snipers-experimental-release -->
+
 # GTA V — PS5 Story Mode menu
 
 An independent Windows app that installs a controller-operated menu inside GTA V on PS5. Run **GTA V.exe**, enter your console IP, and click **Install in-game menu**. Press **L1 + D-pad Right** in GTA.
