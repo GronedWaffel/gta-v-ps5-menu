@@ -1,3 +1,4 @@
+#include "firmware-targets.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Standalone installer. The resident menu runs on GTA's existing script thread.
 #ifndef GTA_INSTALLER_TEST
@@ -167,7 +168,7 @@ static int install(pid_t pid,const Profile& p){
 int main(){
  diagnostic=fopen("/data/gta-v-menu.log","w");
  if(!diagnostic)return finish(1,"Cannot create local diagnostic file.");
- if((kernel_get_fw_version()&0xffff0000)!=0x13600000)return finish(1,"This ELF requires PS5 firmware 13.60.");
+ if(!snipers_firmware_supported(kernel_get_fw_version()))return finish(1,"This firmware is outside the experimental target list.");
  // Serialize two overlapping loader requests; close releases the advisory lock.
  int lock=open("/system_tmp/gta-v-menu.lock",O_CREAT|O_RDWR,0600);
  if(lock<0||flock(lock,LOCK_EX|LOCK_NB)){if(lock>=0)close(lock);return finish(1,"Another GTA installer is active.");}

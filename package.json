@@ -1,11 +1,11 @@
 {
   "name": "gta-v-menu",
   "productName": "GTA V",
-  "version": "1.0.0",
+  "version": "1.1.0-experimental.1",
   "private": true,
   "type": "module",
   "main": "desktop/main.cjs",
-  "description": "Independent Windows installer for an in-game GTA V Story Mode menu on PS5 13.60",
+  "description": "Community-test multi-firmware PS5 compatibility build. Hardware validation remains scoped to 13.60.",
   "license": "GPL-3.0-or-later",
   "scripts": {
     "start": "electron .",

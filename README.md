@@ -1,3 +1,7 @@
+> **Experimental multi-firmware branch.** Community-test targets: 7.00, 7.01, 7.20, 7.40, 7.60, 7.61, 8.00, 8.20, 8.40, 8.60, 9.00, 9.20, 9.40, 9.60, 10.00, 10.01, 10.20, 10.40, 10.60, 11.00, 11.20, 11.60, 12.00, 12.02, 12.20, 12.40, 12.60, 12.70, 13.00, 13.20, 13.40, 13.42, 13.60. 9.05 and 11.40 are excluded. The earlier 13.60 validation below describes the stable release; it does not certify this new build on other firmware. Stable releases remain available separately.
+
+The same two GTA executable profiles and Story Mode checks still apply. Firmware support does not add other GTA versions or GTA Online. The native loader uses PS5 Payload SDK 0.43 firmware tables; game fingerprints remain mandatory.
+
 # GTA V — PS5 Story Mode menu
 
 An independent Windows app that installs a controller-operated menu inside GTA V on PS5. Run **GTA V.exe**, enter your console IP, and click **Install in-game menu**. Press **L1 + D-pad Right** in GTA.

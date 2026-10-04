@@ -1,3 +1,4 @@
+import {isPS5FirmwareTarget} from './ps5-firmware.mjs';
 import net from 'node:net';
 import { PS5Debug } from './ps5debug.mjs';
 import { bytes, integer, address } from './protocol.mjs';
@@ -17,7 +18,7 @@ export async function connectGTA({ host, port = 744, identity, Debug = PS5Debug 
   try {
     await debug.connect();
     const capabilities = await debug.detectCapabilities();
-    if (capabilities.firmware !== '13.60') throw Error('This build targets PS5 firmware 13.60.');
+    if (!isPS5FirmwareTarget(capabilities.firmware)) throw Error('This firmware is outside the experimental target list.');
     if (!/ps5debug[- ]ng\b.*\bv1\.3\.2\b/i.test(capabilities.branding)) throw Error('Load PS5Debug-NG 1.3.2 before connecting.');
     const status = { mode: 'live', mcpWrites: true, connectionId: `${identity}:${host}:${port}`, profile: { platform: 'ps5', host, debugPort: port } };
     async function dispatch(method, args) {

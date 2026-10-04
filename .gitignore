@@ -4,3 +4,5 @@
 *.obj
 /dist/
 /node_modules/
+
+.cache/

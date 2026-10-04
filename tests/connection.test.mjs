@@ -18,8 +18,8 @@ const options = { host: '192.168.1.100', port: 744, identity: 'local-test' };
 test('validates endpoint and closes rejected firmware without writes', async () => {
   assert.throws(() => validateEndpoint('https://example.com', 744));
   assert.throws(() => validateEndpoint('192.168.1.100', 0));
-  const f = fixture('11.00');
-  await assert.rejects(connectGTA({ ...options, Debug: f.Debug }), /13.60/);
+  const f = fixture('11.40');
+  await assert.rejects(connectGTA({ ...options, Debug: f.Debug }), /experimental target list/);
   assert.equal(f.closed, true); assert.equal(f.writes.length, 0);
 });
 test('direct connection refuses stale compare-and-write and verifies successful writes', async () => {
@@ -44,4 +44,10 @@ test('concurrent install operations are serialized through one private connectio
     assert.equal(f.writes.length, 1); assert.equal(f.maxActive, 1);
     assert.equal((await c.call('status')).profile.host, options.host);
   } finally { c.close(); }
+});
+
+test('all exact experimental firmware targets connect without granting extra game profiles',async()=>{
+ const {ps5FirmwareTargets}=await import('../src/ps5-firmware.mjs');
+ for(const fw of ps5FirmwareTargets){const f=fixture(fw),c=await connectGTA({...options,Debug:f.Debug});assert.equal(c.capabilities.firmware,fw);assert.equal(f.writes.length,0);c.close();}
+ for(const fw of ['9.05','11.40','13.61',null]){const f=fixture(fw);await assert.rejects(connectGTA({...options,Debug:f.Debug}),/experimental target list/);assert.equal(f.writes.length,0);}
 });
