@@ -49,5 +49,5 @@ test('concurrent install operations are serialized through one private connectio
 test('all exact experimental firmware targets connect without granting extra game profiles',async()=>{
  const {ps5FirmwareTargets}=await import('../src/ps5-firmware.mjs');
  for(const fw of ps5FirmwareTargets){const f=fixture(fw),c=await connectGTA({...options,Debug:f.Debug});assert.equal(c.capabilities.firmware,fw);assert.equal(f.writes.length,0);c.close();}
- for(const fw of ['9.05','11.40','13.61',null]){const f=fixture(fw);await assert.rejects(connectGTA({...options,Debug:f.Debug}),/experimental target list/);assert.equal(f.writes.length,0);}
+ for(const fw of ['7.00','10.60','9.05','11.40','13.61',null]){const f=fixture(fw);await assert.rejects(connectGTA({...options,Debug:f.Debug}),/experimental target list/);assert.equal(f.writes.length,0);}
 });

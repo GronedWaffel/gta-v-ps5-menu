@@ -1,4 +1,6 @@
-> **Experimental multi-firmware branch.** Community-test targets: 7.00, 7.01, 7.20, 7.40, 7.60, 7.61, 8.00, 8.20, 8.40, 8.60, 9.00, 9.20, 9.40, 9.60, 10.00, 10.01, 10.20, 10.40, 10.60, 11.00, 11.20, 11.60, 12.00, 12.02, 12.20, 12.40, 12.60, 12.70, 13.00, 13.20, 13.40, 13.42, 13.60. 9.05 and 11.40 are excluded. The earlier 13.60 validation below describes the stable release; it does not certify this new build on other firmware. Stable releases remain available separately.
+**[Download the current unified release](https://github.com/GronedWaffel/gta-v-ps5-menu/releases/tag/v1.1.0)** · [YouTube builder](https://sniperscheats.lol/builder/) · [Payloads](https://sniperscheats.lol/payloads/)
+
+> **Unified PS5 11.00–13.60 release.** Exact targets: 11.00, 11.20, 11.60, 12.00, 12.02, 12.20, 12.40, 12.60, 12.70, 13.00, 13.20, 13.40, 13.42, 13.60. 11.40 and firmware below 11.00 are excluded. Earlier hardware validation remains scoped; not every feature is tested on every profile.
 
 The same two GTA executable profiles and Story Mode checks still apply. Firmware support does not add other GTA versions or GTA Online. The native loader uses PS5 Payload SDK 0.43 firmware tables; game fingerprints remain mandatory.
 
@@ -8,16 +10,16 @@ An independent Windows app that installs a controller-operated menu inside GTA V
 
 No PS Neighborhood installation or MCP bridge is needed. The app connects directly to **PS5Debug-NG 1.3.2**. Once installed, the menu runs inside the game and the PC app can close.
 
-This project targets jailbroken **PS5 firmware 13.60**. Executable profiles are included for **PPSA04263 / 01.000.000** and **PPSA04264 / 01.010.002**. The installer checks executable fingerprints and refuses other builds. It also refuses installation outside an active Story Mode character. This is not a GTA Online menu.
+This project targets the listed jailbroken **PS5 11.00–13.60 profiles**. Executable profiles are included for **PPSA04263 / 01.000.000** and **PPSA04264 / 01.010.002**. The installer checks executable fingerprints and refuses other builds. It also refuses installation outside an active Story Mode character. This is not a GTA Online menu.
 
 ## Which download?
 
-Use **GTA-V-Menu-Both-Game-Builds-Windows-x64.zip** for either supported game build:
+Use **GTA-V-1.1.0-win-x64.zip** for either supported game build:
 
 - **PPSA04263 — 01.000.000**
 - **PPSA04264 — 01.010.002**
 
-The app detects the running executable and selects its matching profile automatically. **v1.0.0 is the trainer release version, not the GTA version.** Both profiles are included in the same download.
+The app detects the running executable and selects its matching profile automatically. **v1.1.0 is the trainer release version, not the GTA version.** Both profiles are included in the same download.
 
 ## Controls
 
