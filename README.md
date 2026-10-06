@@ -1,4 +1,4 @@
-**[Download the current unified release](https://github.com/GronedWaffel/gta-v-ps5-menu/releases/tag/v1.1.0)** · [YouTube builder](https://sniperscheats.lol/builder/) · [Payloads](https://sniperscheats.lol/payloads/)
+**[Download the current unified release](https://github.com/GronedWaffel/gta-v-ps5-menu/releases/tag/v1.1.1)** · [YouTube builder](https://sniperscheats.lol/builder/) · [Payloads](https://sniperscheats.lol/payloads/)
 
 > **Unified PS5 11.00–13.60 release.** Exact targets: 11.00, 11.20, 11.60, 12.00, 12.02, 12.20, 12.40, 12.60, 12.70, 13.00, 13.20, 13.40, 13.42, 13.60. 11.40 and firmware below 11.00 are excluded. Earlier hardware validation remains scoped; not every feature is tested on every profile.
 
@@ -14,12 +14,28 @@ This project targets the listed jailbroken **PS5 11.00–13.60 profiles**. Execu
 
 ## Which download?
 
-Use **GTA-V-1.1.0-win-x64.zip** for either supported game build:
+Use **GTA-V-1.1.1-win-x64.zip** for either supported game build:
 
 - **PPSA04263 — 01.000.000**
 - **PPSA04264 — 01.010.002**
 
-The app detects the running executable and selects its matching profile automatically. **v1.1.0 is the trainer release version, not the GTA version.** Both profiles are included in the same download.
+The app detects the running executable and selects its matching profile automatically. **v1.1.1 is the trainer release version, not the GTA version.** Both profiles are included in the same download.
+
+## Fidelity 60 FPS
+
+Version **1.1.1** adds **World → Fidelity 60 FPS** for
+**PPSA04264 / 01.010.002** only. Select Fidelity in GTA's graphics settings, then
+turn this option on. It raises the presentation cap to 60 without changing
+resolution, ray tracing or any other graphics preset field. Actual FPS depends
+on the scene; it does not guarantee a locked 60.
+
+Off restores the original cap. Changing graphics modes, disabling the resident
+menu, or leaving Story Mode stops the override. Restarting GTA removes it. This
+option is not verified for the older PPSA04263 profile and refuses activation
+there. The controller-operated toggle was confirmed working by the tester on
+PS5 firmware 13.60.
+
+See [FIDELITY-VALIDATION.md](FIDELITY-VALIDATION.md) for measurements and limits.
 
 ## Controls
 

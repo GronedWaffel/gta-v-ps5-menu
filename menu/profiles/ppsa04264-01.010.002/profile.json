@@ -25,6 +25,11 @@
       "address": "0x1bc9c90",
       "length": 256,
       "sha256": "a0550ca4c96275cb43ae5e9840fab2dc53ee5b740e106036f06fdf520a8eeefb"
+    },
+    {
+      "address": "0x304e4e8",
+      "length": 61,
+      "sha256": "980418d06ad34d0af7cb24d2f226cf099d812aa1445006db331eab03ed689278"
     }
   ],
   "scriptRegistry": "0x5984e10",
@@ -42,5 +47,10 @@
     "sha256": "4e32b569f41558d6a7965a18c9e5064baaabd76d3a53e7d309d1983ff9a3ccff",
     "stageLocal": 1253,
     "completeStage": 16
+  },
+  "fidelityCap": {
+    "mode": "0x5a8b2c4",
+    "normalInterval": "0x5a8a400",
+    "runtimeInterval": "0x6257f9c"
   }
 }

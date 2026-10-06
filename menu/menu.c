@@ -27,7 +27,9 @@ static u64 nc(u64 address, u32 count, u64 *args, u64 *out) {
 // link-time address in this flat image, which can be allocated at any base.
 static u64 native_pointer(const void *p){u64 address=(u64)p;__asm__ volatile("" : "+r"(address));return address;}
 #define P(x) native_pointer(x)
-enum { GOD, CLIP, AMMO, RUN, JUMP, WANTED, EXPLOSIVE, BELT, RADIO, PHONE, CAR_GOD, HORN, STICKY, WATER, TOGGLE_COUNT };
+enum { GOD, CLIP, AMMO, RUN, JUMP, WANTED, EXPLOSIVE, BELT, RADIO, PHONE, CAR_GOD, HORN, STICKY, WATER, FIDELITY, TOGGLE_COUNT };
+#include "fidelity-cap.h"
+static FidelityCap fidelity;
 #include "vehicle-catalogue.h"
 #include "clothing-labels.h"
 static const char vehicle_classes[][24]={"Compacts","Sedans","SUVs","Coupes","Muscle cars","Sports classics","Sports cars","Supercars","Motorcycles","Off-road","Industrial","Utility","Vans","Bicycles","Boats & submarines","Helicopters","Planes & airships","Service","Emergency","Military","Commercial","Trains","Open-wheel racers"};
@@ -82,6 +84,27 @@ static u32 vehicle_index(u32 row) {
 }
 static u32 vehicle_hash(u32 row) {u32 i=vehicle_index(row);return i<VEHICLE_CANDIDATES?vehicle_catalogue[i].model:0;}
 static void say(const char *s) { copy(menu.notice,s,sizeof(menu.notice)); menu.notice_until=now()+6000; }
+
+static void fidelity_update(u32 permitted) {
+#if GTA_FIDELITY_RUNTIME_INTERVAL
+    fidelity_cap_tick(&fidelity,permitted,*(volatile u32*)GTA_FIDELITY_MODE,
+                      *(volatile u32*)GTA_FIDELITY_NORMAL_INTERVAL,(volatile u32*)GTA_FIDELITY_RUNTIME_INTERVAL);
+#endif
+    menu.flags[FIDELITY]=fidelity.enabled;
+}
+static void fidelity_toggle(void) {
+#if GTA_FIDELITY_RUNTIME_INTERVAL
+    u32 mode=*(volatile u32*)GTA_FIDELITY_MODE,normal=*(volatile u32*)GTA_FIDELITY_NORMAL_INTERVAL;
+    volatile u32 *interval=(volatile u32*)GTA_FIDELITY_RUNTIME_INTERVAL;
+    if(fidelity.enabled){fidelity_cap_stop(&fidelity,mode,normal,interval);say("Fidelity frame cap restored");}
+    else if(fidelity_cap_enable(&fidelity,1,!*(volatile u8*)GTA_NETWORK_FLAG,mode,normal,interval))say("Fidelity unlocked up to 60 FPS; graphics unchanged");
+    else say("Select Fidelity mode first; an unchanged 30 FPS cap is required");
+#else
+    say("Fidelity unlock is verified only for PPSA04264 01.010.002");
+#endif
+    menu.flags[FIDELITY]=fidelity.enabled;
+}
+
 static void number(char *s, u32 n) { char b[12]; u32 i=0,j=0; do {b[i++]='0'+n%10;n/=10;}while(n); while(i)s[j++]=b[--i];s[j]=0; }
 static u32 ped(void) { return N(PLAYER_PED_ID); }
 static u32 car(void) { return N(GET_VEHICLE_PED_IS_IN,ped(),0); }
@@ -209,7 +232,7 @@ static void text(float x,float y,float size,const char *s,u32 green) {
 static void rect(float x,float y,float w,float h,u32 r,u32 g,u32 b,u32 a) { N(DRAW_RECT,F(x),F(y),F(w),F(h),r,g,b,a,0); }
 #define ITEMS(a) (sizeof(a)/sizeof((a)[0]))
 static const char *title(u32 page) { switch(page){case 1:return "PLAYER";case 2:return "WEAPONS";case 3:return "GARAGE";case 4:return "VEHICLE SPAWNER";case 5:return "WORLD";case 6:return "CHARACTER";case 7:return "STORY & PROGRESSION";case 8:return "WEAPON CATALOGUE";case 9:return "WEATHER";case 10:return "PLAYER MODELS";case 11:return "CLOTHING & OUTFITS";case 12:return "CLOTHING ITEMS";case 13:return "COLORS / TEXTURES";case 14:return "TIME OF DAY";case 15:return vehicle_classes[menu.vehicle_class];default:return "STORY MODE";} }
-static u32 rows(void) {switch(menu.page){case 1:return 9;case 2:return 5;case 3:return 8;case 4:return menu.class_total?menu.class_total:1;case 15:return menu.class_count[menu.vehicle_class]?menu.class_count[menu.vehicle_class]:1;case 5:return 3;case 6:return 2;case 7:return 5;case 8:return ITEMS(weapon_names);case 9:return ITEMS(weather_names);case 10:return ITEMS(ped_names);case 11:return ITEMS(component_labels);case 12:{u32 n=N(GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS,ped(),menu.component);return n&&n<4096?n:1;}case 13:{u32 n=N(GET_NUMBER_OF_PED_TEXTURE_VARIATIONS,ped(),menu.component,menu.drawable);return n&&n<4096?n:1;}case 14:return 24;default:return 8;}}
+static u32 rows(void) {switch(menu.page){case 1:return 9;case 2:return 5;case 3:return 8;case 4:return menu.class_total?menu.class_total:1;case 15:return menu.class_count[menu.vehicle_class]?menu.class_count[menu.vehicle_class]:1;case 5:return 4;case 6:return 2;case 7:return 5;case 8:return ITEMS(weapon_names);case 9:return ITEMS(weather_names);case 10:return ITEMS(ped_names);case 11:return ITEMS(component_labels);case 12:{u32 n=N(GET_NUMBER_OF_PED_DRAWABLE_VARIATIONS,ped(),menu.component);return n&&n<4096?n:1;}case 13:{u32 n=N(GET_NUMBER_OF_PED_TEXTURE_VARIATIONS,ped(),menu.component,menu.drawable);return n&&n<4096?n:1;}case 14:return 24;default:return 8;}}
 static void scroll_to_selection(void) {
     u32 n=rows();if(menu.row>=n)menu.row=n-1;
     u32 old=menu.scroll;
@@ -228,6 +251,7 @@ static void back_page(void) {
     u32 i=--menu.history_count;menu.page=menu.history_page[i];menu.row=menu.history_row[i];menu.scroll=menu.history_scroll[i];scroll_to_selection();menu.highlight=menu.row-menu.scroll;
 }
 static int toggle_at(u32 page,u32 row) {
+    if(page==5&&row==3)return FIDELITY;
     if(page==1){switch(row){case 0:return GOD;case 1:return WANTED;case 2:return RUN;case 3:return JUMP;case 4:return BELT;case 5:return RADIO;case 6:return PHONE;}}
     if(page==2&&row<3)return row==0?CLIP:row==1?AMMO:EXPLOSIVE;
     if(page==3){switch(row){case 0:return CAR_GOD;case 2:return HORN;case 3:return STICKY;case 4:return WATER;}}
@@ -241,7 +265,7 @@ static const char *label(u32 row) {
     case 3:switch(row){case 0:return "Vehicle god mode";case 1:return "Max performance upgrades";case 2:return "Horn boost";case 3:return "Stick vehicle to ground";case 4:return "Drive on water";case 5:return "Repair vehicle";case 6:return "Upright vehicle";default:return "Vehicle spawner";}
     case 4:return row<menu.class_total?vehicle_classes[menu.available_classes[row]]:"Preparing catalogue...";
     case 15:{u32 i=vehicle_index(row);return i<VEHICLE_CANDIDATES?vehicle_text+vehicle_catalogue[i].label:"No available vehicles";}
-    case 5:return row==0?"Teleport to waypoint":row==1?"Weather presets":"Time of day";
+    case 5:return row==0?"Teleport to waypoint":row==1?"Weather presets":row==2?"Time of day":"Fidelity 60 FPS";
     case 6:return row==0?"Player models":"Clothing & outfits";
     case 8:return weapon_labels[row];
     case 9:return weather_names[row];
@@ -297,6 +321,7 @@ static void begin_model_hash(u32 job,u32 h) {
 }
 static void begin_model(u32 job,const char *name) {begin_model_hash(job,hash(name));}
 static void toggle(u32 id) {
+    if(id==FIDELITY){fidelity_toggle();return;}
     u32 on=menu.flags[id]^1;menu.flags[id]=on;u32 p=ped();
     switch(id){
     case GOD:N(SET_ENTITY_INVINCIBLE,p,on);break;
@@ -495,7 +520,7 @@ static void menu_input(u32 keys) {
 }
 static const char *description(void) {
     if(menu.page==0){switch(menu.row){case 0:return "Health, movement and police controls.";case 1:return "Ammo, explosive rounds and your arsenal.";case 2:return "Performance, repairs and vehicle abilities.";case 3:return "Browse models; they preload as you choose.";case 4:return "Waypoints, weather and the time of day.";case 5:return "Player models and live clothing choices.";case 6:return "Save-changing actions ask for confirmation.";default:return "Return to the game. Your toggles stay active.";}}
-    int t=toggle_at(menu.page,menu.row);if(t>=0){switch(t){case WANTED:return "Continuously clears your wanted level.";case GOD:return "Protect your character from damage.";case CLIP:return "Fire continuously without reloading.";case AMMO:return "Keep the game's unlimited ammo flag enabled.";case RUN:return "Use the game's supported 1.49x sprint boost.";case CAR_GOD:return "Protection follows the vehicle you enter.";case WATER:return "Creates a hidden water-surface platform.";case HORN:return "Hold the horn to accelerate your vehicle.";default:return "Cross toggles this ability on or off.";}}
+    int t=toggle_at(menu.page,menu.row);if(t>=0){switch(t){case FIDELITY:return "Unlock up to 60 FPS; keep Fidelity graphics.";case WANTED:return "Continuously clears your wanted level.";case GOD:return "Protect your character from damage.";case CLIP:return "Fire continuously without reloading.";case AMMO:return "Keep the game's unlimited ammo flag enabled.";case RUN:return "Use the game's supported 1.49x sprint boost.";case CAR_GOD:return "Protection follows the vehicle you enter.";case WATER:return "Creates a hidden water-surface platform.";case HORN:return "Hold the horn to accelerate your vehicle.";default:return "Cross toggles this ability on or off.";}}
     if(menu.page==4)return "Choose a category. Only registered models are listed.";
     if(menu.page==15)return "Cross spawns this vehicle and seats you in it.";
     if(menu.page==3&&menu.row==1)return "Max performance parts; skip installed upgrades.";
@@ -571,11 +596,12 @@ static void block_menu_buttons(void) {
     if(menu.preview_active){N(DISABLE_CONTROL_ACTION,0,22,1);N(DISABLE_CONTROL_ACTION,0,193,1);N(DISABLE_CONTROL_ACTION,2,193,1);}
 }
 static void menu_tick(void) {
+    fidelity_update(mailbox.menu_enabled&&!*(volatile u8*)GTA_NETWORK_FLAG);
     if(!mailbox.menu_enabled)return;
     if(*(volatile u8*)GTA_NETWORK_FLAG){preview_camera_stop();menu.preview_active=0;if(menu.job==7){teleport_cleanup();menu.job=0;}return;}
     u32 frame=N(GET_FRAME_COUNT);if(frame==menu.frame)return;menu.frame=frame;menu.tick_count++;
     mailbox.menu_ticks=menu.tick_count;
-    if(!menu.initialized){menu.initialized=1;menu.hour=12;menu.component=11;menu.flags[WANTED]=(mailbox.frame_flags&64)!=0;menu.flags[JUMP]=(mailbox.frame_flags&1)!=0;menu.flags[EXPLOSIVE]=(mailbox.frame_flags&2)!=0;menu.flags[HORN]=(mailbox.frame_flags&4)!=0;menu.flags[STICKY]=(mailbox.frame_flags&8)!=0;menu.flags[PHONE]=(mailbox.frame_flags&16)!=0;u64 root=*(volatile u64*)GTA_PLAYER_ROOT,entity=root?*(volatile u64*)(root+8):0;if(entity){menu.flags[GOD]=(*(volatile u32*)(entity+0x158)&0x100)!=0;u64 w=*(volatile u64*)(entity+0x1090);if(w){menu.flags[AMMO]=(*(volatile u8*)(w+0x71)&1)!=0;menu.flags[CLIP]=(*(volatile u8*)(w+0x71)&2)!=0;}u64 info=*(volatile u64*)(entity+0x1088);if(info)menu.flags[RUN]=*(volatile float*)(info+GTA_RUN_OFFSET)>1.01f;}if(mailbox.seed_version==1){for(u32 i=0;i<TOGGLE_COUNT;i++)menu.flags[i]=mailbox.seed_flags[i]!=0;}say("GTA V loaded | L1 + D-pad Right");}
+    if(!menu.initialized){menu.initialized=1;menu.hour=12;menu.component=11;menu.flags[WANTED]=(mailbox.frame_flags&64)!=0;menu.flags[JUMP]=(mailbox.frame_flags&1)!=0;menu.flags[EXPLOSIVE]=(mailbox.frame_flags&2)!=0;menu.flags[HORN]=(mailbox.frame_flags&4)!=0;menu.flags[STICKY]=(mailbox.frame_flags&8)!=0;menu.flags[PHONE]=(mailbox.frame_flags&16)!=0;u64 root=*(volatile u64*)GTA_PLAYER_ROOT,entity=root?*(volatile u64*)(root+8):0;if(entity){menu.flags[GOD]=(*(volatile u32*)(entity+0x158)&0x100)!=0;u64 w=*(volatile u64*)(entity+0x1090);if(w){menu.flags[AMMO]=(*(volatile u8*)(w+0x71)&1)!=0;menu.flags[CLIP]=(*(volatile u8*)(w+0x71)&2)!=0;}u64 info=*(volatile u64*)(entity+0x1088);if(info)menu.flags[RUN]=*(volatile float*)(info+GTA_RUN_OFFSET)>1.01f;}if(mailbox.seed_version==1){for(u32 i=0;i<ITEMS(mailbox.seed_flags);i++)menu.flags[i]=mailbox.seed_flags[i]!=0;}say("GTA V loaded | L1 + D-pad Right");}
     catalogue_tick();resident_effects();
     // Read held keys and detect edges ourselves; works with blocked game controls.
     u32 keys=0;const u32 controls[]={37,175,172,173,174,191,194,193};

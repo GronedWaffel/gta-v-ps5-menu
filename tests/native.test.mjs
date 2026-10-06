@@ -32,3 +32,9 @@ test('remote syscall completes the wrapper return before restoring GTA, includin
  run(zig,['cc','-O1','tests/syscall-return.c','-o',exe]);
  assert.match(run(exe,[]),/checks passed/);
 });
+
+test('Fidelity interval ownership and rollback',()=>{
+ const exe=path.join(out,'fidelity-cap.exe');
+ run(zig,['cc','-O1','tests/fidelity-cap.c','-o',exe]);
+ assert.match(run(exe,[]),/passed/);
+});

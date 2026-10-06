@@ -9,6 +9,7 @@ The resident GTA V Story Mode menu and desktop installer are maintained by **Gro
 - [alloc8or's native database](https://github.com/alloc8or/gta5-nativedb-data): native names, signatures and trophy documentation.
 - [ZeddMOCO's 1.70 crossmap](https://github.com/ZeddMOCO/GTA-V-Crossmap-1.70), [TupoyeMenu/BigBaseV2-fix](https://github.com/TupoyeMenu/BigBaseV2-fix) and [Maestro-1337's 1.58 crossmap](https://github.com/Maestro-1337/GTA-V-1.58-Crossmap): hash translation references, checked against native registrations in the user's executables.
 - [DurtyFree's GTA V data dumps](https://github.com/DurtyFree/gta-v-data-dumps): factual vehicle identifiers, labels and classes in the compact catalogue.
+- **illusion and Jao:** [PS-Game-Patch](https://github.com/illusionyy/PS-Game-Patch), GTA V PS4 frame-cap research reference. Their PS4 patches were not applied; the PS5 Fidelity interval was traced and verified independently in the tested executable.
 - [Cfx.re controller reference](https://docs.fivem.net/docs/game-references/controls/): controller indices.
 - [YimMenu's decompiled-script research](https://github.com/YimMenu/GTA-V-Decompiled-Scripts) and [drunderscore's GTA research](https://github.com/drunderscore/GTA-Research): mission-flow research references. Game scripts and executables are not distributed.
 
