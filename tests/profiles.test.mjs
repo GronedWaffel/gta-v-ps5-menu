@@ -46,8 +46,11 @@ test('both shipped profiles retain their distinct player and mission layouts', a
     const image = await readFile(new URL(dir + '/gta-bridge.bin', base));
     assert.equal(image.length, 0x20000); assert.ok(image.subarray(0x10000).every(v => !v));
     images.push(createHash('sha256').update(image).digest('hex'));
-    assert.ok(profile.prologue.length > 600000);
+    // 01.005.000 ships with Prologue completion disabled (length 0): the menu
+    // reports "not verified for this build" instead of touching script state.
+    if (profile.version === '01.005.000') assert.equal(profile.prologue.length, 0);
+    else assert.ok(profile.prologue.length > 600000);
   }
-  assert.deepEqual(offsets, [0xcb0n, 0xd10n]);
-  assert.notEqual(images[0], images[1]);
+  assert.deepEqual(offsets, [0xcb0n, 0xd10n, 0xd00n]);
+  assert.equal(new Set(images).size, images.length);
 });
